@@ -1,16 +1,33 @@
 const express = require("express");
-var cors = require("cors");
-const Data = require("./data");
+const Twit = require('twit');
+const cors = require("cors");
 
 const API_PORT = 3001;
 const app = express();
 app.use(cors());
 const router = express.Router();
 
-router.get("/getTweets", (req, res) => {
-  Data.find((err, data) => {
-    if (err) return res.json({ success: false, error: err });
-    return res.json({ success: true, data: data });
+
+var T = new Twit({
+  consumer_key: 'EOhSiU8UxzMHA8kxTSeiB8DM1',
+  consumer_secret: 'MWBQrTHOJlU9YiXxVjOYEw18eE2QmkSk2biLDWWsLZ9Sxudvan',
+  access_token: '1117217843672543232-ogNNzGiZ3eY6YuAfEWu7eudf6a87JZ',
+  access_token_secret: '9ptbrNPewHKCZl6fwTLkgi7NmCwAqUZwBAk7HkhDIumpj'
+});
+ 
+
+router.get("/searchTweets/:hashtag", (req, res) => {
+  var params = {
+    q: `#${req.params.hashtag} filter:images`,
+    include_entities: true,
+    count: 500,
+  };
+  T.get(`search/tweets`, params, function(error, data, response) {
+    if(!error){
+      return res.send(data);
+    } else {
+      console.log(error);
+    }
   });
 });
 

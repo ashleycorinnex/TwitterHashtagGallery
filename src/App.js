@@ -1,40 +1,157 @@
 import React, { Component } from "react";
+import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import TextField from '@material-ui/core/TextField';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import Avatar from '@material-ui/core/Avatar';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faTwitter } from '@fortawesome/free-brands-svg-icons' 
+
+library.add(faTwitter); 
+
 
 class App extends Component {
   state = {
-    tweets: [],
+    event: '',
+    hashtag: '',
+    gallery: false,
+    posts: [],
+    users: []
   };
 
-  componentDidMount() {
-    this.getTweetsFromDb();
-  }
-
-  componentWillUnmount() {
-
-  }
-
-  getTweetsFromDb = () => {
-    fetch("http://localhost:3001/api/getTweets")
-      .then(data => data.json())
-      .then(res => this.setState({ tweets: res.data }));
+  searchTweets = () => {
+    var vm = this;
+    fetch(`http://localhost:3001/api/searchTweets/${vm.state.hashtag || 'Hashtag'}`)
+    .then(data => data.json())
+    .then(function (response) {
+      var posts = response.statuses.filter(x=> x.entities != null && x.entities.media != null && x.entities.media[0] != null);
+      vm.setState({ posts: posts });
+      vm.setState({ users: posts.map(item => item.user.screen_name).filter((value, index, self) => self.indexOf(value) === index)});
+    }).catch(function (response) {
+        console.log(response);
+    });
   };
+
+  handleChange = (event) => {
+    this.setState({[event.target.name]: event.target.value});
+  }
+
+  handleSubmit = (event) => {
+    event.preventDefault();
+
+    this.searchTweets();
+    this.setState({gallery: true});
+  }
 
   render() {
-    const { tweets } = this.state;
+    const { event, hashtag, gallery, posts, users} = this.state;
+
     return (
-      <div>
-        <ul>
-          {tweets.length <= 0
-            ? "NO DB ENTRIES YET"
-            : tweets.map(dat => (
-                <li style={{ padding: "10px" }} key={dat.message}>
-                  <span style={{ color: "gray" }}> id: </span> {dat.id} <br />
-                  <span style={{ color: "gray" }}> data: </span>
-                  {dat.message}
-                </li>
-              ))}
-        </ul>
-      </div>
+      <Grid container 
+            justify={gallery ? 'flex-start' : 'center'}
+            alignItems={gallery ? 'flex-start' : 'center'}
+            direction="column"
+            id="grid">
+        {!gallery ? 
+        <form onSubmit={this.handleSubmit}>
+            <TextField
+              label="Event Name"
+              margin="normal"
+              variant="outlined"
+              name="event"
+              fullWidth
+              onChange={this.handleChange}
+            />
+            <TextField
+              label="Hashtag"
+              margin="normal"
+              variant="outlined"
+              name="hashtag"
+              fullWidth
+              onChange={this.handleChange}
+            />
+          <Button
+            className="button"
+            type="submit"
+            fullWidth
+            variant="contained"
+            size="large">
+            Start Event
+          </Button>
+        </form>
+        :
+        <Grid direction="column" container>
+          <Grid container>
+          <Grid item xs={12} lg={8}>
+            <h1 className="header">{event || 'Event Name'}</h1>
+            <h2 className="subheader">
+              <strong>#{hashtag || 'Hashtag'}</strong>
+              <span className="grey--text">
+                <strong className="ml-2">{posts.length}</strong> Posts 
+                <span className="ml-2">{'//'}</span>
+                <strong className="ml-2">{users.length}</strong> Users
+              </span>
+            </h2>
+          </Grid>
+          <Grid item xs={12} lg={4}>
+            <form onSubmit={this.handleSubmit}>
+                <TextField
+                  label="Search"
+                  margin="none"
+                  variant="outlined"
+                  name="search"
+                  onChange={this.handleChange}
+                />
+              <Button
+                className="button black ml-2"
+                type="submit"
+                variant="contained">
+                Search
+              </Button>
+            </form>     
+          </Grid>
+          </Grid>
+          <Grid container>
+            {posts.map(post =>  
+              <Card  key={post.id} className="post" square elevation={0}>
+                  <CardMedia
+                    className="post-image"
+                    image={post.entities.media[0].media_url}
+                  />
+                  <CardContent className="post-overlay">
+                  <List className="post-user">
+                  <ListItem>
+                      <ListItemAvatar className="post-avatar">
+                        <Avatar src={post.user.profile_image_url} />
+                      </ListItemAvatar>
+                      <ListItemText primary={post.user.screen_name} secondary="Jan 9, 2014" />
+                      <ListItemSecondaryAction>
+                        <FontAwesomeIcon icon={['fab', 'twitter']} size="lg" className="mr-2"/>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  </List>
+                  <Button
+                      className="button outlined"
+                      size="large"
+                      onClick={() => { window.open(`https://twitter.com/statuses/${post.id_str}`, '_blank') }}
+                      variant="outlined">
+                      View Post
+                    </Button>
+                  </CardContent>
+                </Card>
+            )}
+          </Grid>
+          </Grid>
+        }
+      </Grid>
     );
   }
 }
