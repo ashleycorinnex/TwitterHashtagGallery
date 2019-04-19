@@ -14,6 +14,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTwitter } from '@fortawesome/free-brands-svg-icons' 
+import moment from 'moment';
 
 library.add(faTwitter); 
 
@@ -22,6 +23,7 @@ class App extends Component {
   state = {
     event: '',
     hashtag: '',
+    search: '',
     gallery: false,
     posts: [],
     users: []
@@ -32,9 +34,11 @@ class App extends Component {
     fetch(`http://localhost:3001/api/searchTweets/${vm.state.hashtag || 'Hashtag'}`)
     .then(data => data.json())
     .then(function (response) {
-      var posts = response.statuses.filter(x=> x.entities != null && x.entities.media != null && x.entities.media[0] != null);
+      var posts = response.statuses.filter(x=> 
+        x.entities != null && x.entities.media != null && x.entities.media[0] != null   //has image
+        && (vm.state.search == '' || x.user.screen_name.toLowerCase().indexOf(vm.state.search.toLowerCase()) > -1)); //searched?
       vm.setState({ posts: posts });
-      vm.setState({ users: posts.map(item => item.user.screen_name).filter((value, index, self) => self.indexOf(value) === index)});
+      vm.setState({ users: posts.map(x => x.user.screen_name).filter((value, index, self) => self.indexOf(value) === index)});
     }).catch(function (response) {
         console.log(response);
     });
@@ -89,39 +93,40 @@ class App extends Component {
         </form>
         :
         <Grid direction="column" container>
-          <Grid container>
-          <Grid item xs={12} lg={8}>
-            <h1 className="header">{event || 'Event Name'}</h1>
-            <h2 className="subheader">
-              <strong>#{hashtag || 'Hashtag'}</strong>
-              <span className="grey--text">
-                <strong className="ml-2">{posts.length}</strong> Posts 
-                <span className="ml-2">{'//'}</span>
-                <strong className="ml-2">{users.length}</strong> Users
-              </span>
-            </h2>
-          </Grid>
-          <Grid item xs={12} lg={4}>
-            <form onSubmit={this.handleSubmit}>
-                <TextField
-                  label="Search"
-                  margin="none"
-                  variant="outlined"
-                  name="search"
-                  onChange={this.handleChange}
-                />
-              <Button
-                className="button black ml-2"
-                type="submit"
-                variant="contained">
-                Search
-              </Button>
-            </form>     
-          </Grid>
+          <Grid container justify="space-between">
+            <Grid item>
+              <h1 className="header">{event || 'Event Name'}</h1>
+              <h2 className="subheader">
+                <strong>#{hashtag || 'Hashtag'}</strong>
+                <span className="grey--text">
+                  <strong className="ml-2">{posts.length}</strong> Posts 
+                  <span className="ml-2">{'//'}</span>
+                  <strong className="ml-2">{users.length}</strong> Users
+                </span>
+              </h2>
+            </Grid>
+            <Grid>
+              <form onSubmit={this.handleSubmit}>
+                  <TextField
+                    label="Search"
+                    margin="none"
+                    variant="outlined"
+                    name="search"
+                    onChange={this.handleChange}
+                  />
+                <Button
+                  className="button black ml-2"
+                  type="submit"
+                  size="large"
+                  variant="contained">
+                  Search
+                </Button>
+              </form>     
+            </Grid>
           </Grid>
           <Grid container>
             {posts.map(post =>  
-              <Card  key={post.id} className="post" square elevation={0}>
+              <Card key={post.id} className="post" square elevation={0}>
                   <CardMedia
                     className="post-image"
                     image={post.entities.media[0].media_url}
@@ -132,7 +137,7 @@ class App extends Component {
                       <ListItemAvatar className="post-avatar">
                         <Avatar src={post.user.profile_image_url} />
                       </ListItemAvatar>
-                      <ListItemText primary={post.user.screen_name} secondary="Jan 9, 2014" />
+                      <ListItemText primary={post.user.screen_name} secondary={moment(post.created_at, 'ddd MMM DD HH:mm:ss Z YYYY').fromNow()} />
                       <ListItemSecondaryAction>
                         <FontAwesomeIcon icon={['fab', 'twitter']} size="lg" className="mr-2"/>
                       </ListItemSecondaryAction>
