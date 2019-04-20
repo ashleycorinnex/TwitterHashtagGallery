@@ -18,7 +18,7 @@ else{
   require('dotenv').config()
 }
 
-app.get('/', function(req, res) {
+app.get('*', function(req, res) {
   res.send(process.env);
 });
 //app.use("/api", router);
