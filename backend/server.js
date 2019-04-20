@@ -16,9 +16,10 @@ var T = new Twit({
 });
  
 
-router.get("/searchTweets/:hashtag", (req, res) => {
+router.get("/searchTweets", (req, res) => {
   var params = {
-    q: `#${req.params.hashtag} filter:images`,
+    q: `#${req.query.hashtag} filter:images`,
+    since_id: req.query.since,
     include_entities: true,
     count: 500,
   };
