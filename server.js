@@ -9,9 +9,9 @@ app.use(cors());
 //const router = express.Router();
  
 if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, 'build')));
+  app.use(express.static(path.join(__dirname, 'public')));
   app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
   });
 }
 else{
@@ -19,7 +19,7 @@ else{
 }
 
 app.get('*', function(req, res) {
-  res.send(path.join(__dirname, 'build'));
+  res.send(path.join(__dirname, 'public'));
 });
 //app.use("/api", router);
 console.log(process.env);
