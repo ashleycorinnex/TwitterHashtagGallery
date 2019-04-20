@@ -6,7 +6,7 @@ const path = require('path');
 const API_PORT = process.env.PORT || 3001;
 const app = express();
 app.use(cors());
-const router = express.Router();
+//const router = express.Router();
  
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'build')));
@@ -18,11 +18,11 @@ else{
   require('dotenv').config()
 }
 
-app.get('*', function(req, res) {
-  res.send(process.env.NODE_ENV);
+app.get('/', function(req, res) {
+  res.send(process.env);
 });
-
-app.use("/api", router);
+//app.use("/api", router);
+console.log(process.env);
 var T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
   consumer_secret: process.env.CONSUMER_SECRET,
@@ -30,7 +30,7 @@ var T = new Twit({
   access_token_secret: process.env.ACCESS_TOKEN_SECRET
 });
 
-router.get("/searchTweets", (req, res) => {
+app.get("/api/searchTweets", (req, res) => {
   var params = {
     q: `#${req.query.hashtag} filter:images`,
     since_id: req.query.since,
