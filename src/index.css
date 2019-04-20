@@ -59,7 +59,7 @@
     position: relative;
   }
 
-  .post:hover .post-overlay{
+  .post:hover .post-overlay, .post:active .post-overlay{
     visibility: hidden;
     visibility: visible;
     opacity: 1;

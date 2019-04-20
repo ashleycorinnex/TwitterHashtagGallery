@@ -1,6 +1,7 @@
 const express = require("express");
 const Twit = require('twit');
 const cors = require("cors");
+const path = require('path');
 
 const API_PORT = 3001;
 const app = express();
@@ -16,6 +17,13 @@ var T = new Twit({
 });
  
 
+//if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'build')));
+  app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname, 'build', 'index.html'));
+  });
+//}
+app.use("/api", router);
 router.get("/searchTweets", (req, res) => {
   var params = {
     q: `#${req.query.hashtag} filter:images`,
@@ -32,6 +40,5 @@ router.get("/searchTweets", (req, res) => {
   });
 });
 
-app.use("/api", router);
 
 app.listen(API_PORT, () => console.log(`LISTENING ON PORT ${API_PORT}`));

@@ -122,31 +122,31 @@ class App extends Component {
   renderGalleryItem(item, i) {
     return (
       <Card key={item.id} className="post" square elevation={0}>
-      <CardMedia
-        className="post-image"
-        image={item.entities.media[0].media_url}
-      />
-      <CardContent className="post-overlay">
-      <List className="post-user">
-      <ListItem>
-          <ListItemAvatar className="post-avatar">
-            <Avatar src={item.user.profile_image_url} />
-          </ListItemAvatar>
-          <ListItemText primary={item.user.screen_name} secondary={moment(item.created_at, 'ddd MMM DD HH:mm:ss Z YYYY').fromNow()} />
-          <ListItemSecondaryAction>
-            <FontAwesomeIcon icon={['fab', 'twitter']} size="lg" className="mr-2"/>
-          </ListItemSecondaryAction>
-        </ListItem>
-      </List>
-      <Button
-          className="button outlined"
-          size="large"
-          onClick={() => { window.open(`https://twitter.com/statuses/${item.id_str}`, '_blank') }}
-          variant="outlined">
-          View Post
-        </Button>
-      </CardContent>
-    </Card>
+        <CardMedia
+          className="post-image"
+          image={item.entities.media[0].media_url}
+        />
+        <CardContent className="post-overlay">
+          <List className="post-user">
+          <ListItem>
+              <ListItemAvatar className="post-avatar">
+                <Avatar src={item.user.profile_image_url} />
+              </ListItemAvatar>
+              <ListItemText primary={item.user.screen_name} secondary={moment(item.created_at, 'ddd MMM DD HH:mm:ss Z YYYY').fromNow()} />
+              <ListItemSecondaryAction>
+                <FontAwesomeIcon icon={['fab', 'twitter']} size="lg" className="mr-2"/>
+              </ListItemSecondaryAction>
+            </ListItem>
+          </List>
+          <Button
+            className="button outlined"
+            size="large"
+            onClick={() => { window.open(`https://twitter.com/statuses/${item.id_str}`, '_blank') }}
+            variant="outlined">
+            View Post
+          </Button>
+        </CardContent>
+      </Card>
     )
   }
 
@@ -181,7 +181,7 @@ class App extends Component {
   searchTweets = () => {
     const { hashtag, posts} = this.state;
     var vm = this;
-    fetch(`http://localhost:3001/api/searchTweets?hashtag=${hashtag || 'Hashtag'}&since=${posts.length > 0 ? posts[0].id : ''}`)
+    fetch(`/api/searchTweets?hashtag=${hashtag || 'Hashtag'}&since=${posts.length > 0 ? posts[0].id : ''}`)
     .then(data => data.json())
     .then(function (response) {
       var newPosts = response.statuses.filter(x=> x.entities  && x.entities.media && x.entities.media.length && !posts.find(p=>p.id == x.id)); 
