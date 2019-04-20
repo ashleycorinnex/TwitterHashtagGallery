@@ -18,8 +18,11 @@ else{
   require('dotenv').config()
 }
 
+app.get('*', function(req, res) {
+  res.send(process.env.NODE_ENV);
+});
+
 app.use("/api", router);
-console.log(process.env);
 var T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
   consumer_secret: process.env.CONSUMER_SECRET,
