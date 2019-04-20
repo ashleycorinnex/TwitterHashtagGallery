@@ -19,7 +19,7 @@ else{
 }
 
 app.get('*', function(req, res) {
-  res.send(process.env);
+  res.send(path.join(__dirname, 'build'));
 });
 //app.use("/api", router);
 console.log(process.env);
