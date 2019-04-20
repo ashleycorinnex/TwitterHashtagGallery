@@ -18,11 +18,7 @@ else{
   require('dotenv').config()
 }
 
-app.get('*', function(req, res) {
-  res.send(path.join(__dirname, 'public'));
-});
 //app.use("/api", router);
-console.log(process.env);
 var T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
   consumer_secret: process.env.CONSUMER_SECRET,
