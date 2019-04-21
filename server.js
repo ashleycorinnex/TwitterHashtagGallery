@@ -6,7 +6,6 @@ const path = require('path');
 const API_PORT = process.env.PORT || 3001;
 const app = express();
 app.use(cors());
-//const router = express.Router();
  
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'public')));
@@ -18,7 +17,6 @@ else{
   require('dotenv').config()
 }
 
-//app.use("/api", router);
 var T = new Twit({
   consumer_key: process.env.CONSUMER_KEY,
   consumer_secret: process.env.CONSUMER_SECRET,

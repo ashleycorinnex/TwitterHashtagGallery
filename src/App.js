@@ -76,18 +76,20 @@ class App extends Component {
   };
 
   galleryComponent = () => {
-    const { event, hashtag, posts} = this.state;
+    const { event, hashtag, search } = this.state;
     return (
       <Grid direction="column" container>
-      <Grid container justify="space-between">
+      <Grid container justify="space-between" alignItems="center" className="pl-2">
         <Grid item>
           <h1 className="header">{event || 'Event Name'}</h1>
           <h2 className="subheader">
-            <strong>#{hashtag || 'Hashtag'}</strong>
+            <strong className="xs-block mr-2">#{hashtag || 'Hashtag'}</strong>
             <span className="grey--text">
-              <strong className="ml-2">{this.filteredPosts().length}</strong> Posts 
+              <strong>{this.filteredPosts().length}</strong> Posts 
               <span className="ml-2">{'//'}</span>
               <strong className="ml-2">{this.filteredPosts().map(x => x.user.screen_name).filter((value, index, self) => self.indexOf(value) === index).length}</strong> Users
+              <br/>
+              <small>{search != '' ? `Searching handles with '${search}'` : ''}</small>
             </span>
           </h2>
         </Grid>
@@ -181,7 +183,7 @@ class App extends Component {
   searchTweets = () => {
     const { hashtag, posts} = this.state;
     var vm = this;
-    fetch(`/api/searchTweets?hashtag=${hashtag || 'Hashtag'}&since=${posts.length > 0 ? posts[0].id : ''}`)
+    fetch(`http://localhost:3001/api/searchTweets?hashtag=${hashtag || 'Hashtag'}&since=${posts.length > 0 ? posts[0].id : ''}`)
     .then(data => data.json())
     .then(function (response) {
       var newPosts = response.statuses.filter(x=> x.entities  && x.entities.media && x.entities.media.length && !posts.find(p=>p.id == x.id)); 

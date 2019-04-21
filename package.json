@@ -25,12 +25,12 @@
   },
   "scripts": {
     "start": "concurrently \"node server.js\" \"react-scripts start\"",
+    "start-react": "react-scripts start",
     "prod": "node server.js",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "proxy": "http://localhost:3001",
   "eslintConfig": {
     "extends": "react-app"
   },
