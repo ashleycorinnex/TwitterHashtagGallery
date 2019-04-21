@@ -2,10 +2,12 @@ const express = require("express");
 const Twit = require('twit');
 const cors = require("cors");
 const path = require('path');
+const nocache = require('nocache');
 
 const API_PORT = process.env.PORT || 3001;
 const app = express();
 app.use(cors());
+app.use(nocache());
  
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(__dirname, 'public')));
