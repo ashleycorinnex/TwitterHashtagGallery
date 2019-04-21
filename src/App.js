@@ -189,7 +189,7 @@ class App extends Component {
     fetch(`/api/searchTweets?hashtag=${hashtag || 'Hashtag'}&since=${posts.length > 0 ? posts[0].id : ''}`)
     .then(data => data.json())
     .then(function (response) {
-      var newPosts = response.statuses.filter(x=> x.entities  && x.entities.media && x.entities.media.length && !posts.find(p=>p.id == x.id)); 
+      var newPosts = response.statuses.filter(x=> x.entities  && x.entities.media && x.entities.media.length && !posts.filter(p=>p.id == x.id).length); 
       vm.setState({ posts: [...newPosts, ...posts]});
     }).catch(function (response) {
         console.log(response);
