@@ -78,7 +78,7 @@ class App extends Component {
   galleryComponent = () => {
     const { event, hashtag, search } = this.state;
     return (
-      <Grid direction="column" container>
+      <div>
       <Grid container justify="space-between" alignItems="center" className="pl-2">
         <Grid item>
           <h1 className="header">{event || 'Event Name'}</h1>
@@ -117,7 +117,7 @@ class App extends Component {
           this.renderGalleryItem(post)
         )}
       </Grid>
-      </Grid>
+      </div>
     )
   }
 
