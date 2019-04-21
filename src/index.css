@@ -165,7 +165,7 @@
     }
  }
  @media only screen and (max-width : 1290px) and (min-width : 1051px) {
-    .box {
+    .post {
        width: 25%;
        padding-bottom: 25%;
     }
