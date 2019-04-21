@@ -183,7 +183,7 @@ class App extends Component {
   searchTweets = () => {
     const { hashtag, posts} = this.state;
     var vm = this;
-    fetch(`http://localhost:3001/api/searchTweets?hashtag=${hashtag || 'Hashtag'}&since=${posts.length > 0 ? posts[0].id : ''}`)
+    fetch(`/api/searchTweets?hashtag=${hashtag || 'Hashtag'}&since=${posts.length > 0 ? posts[0].id : ''}`)
     .then(data => data.json())
     .then(function (response) {
       var newPosts = response.statuses.filter(x=> x.entities  && x.entities.media && x.entities.media.length && !posts.find(p=>p.id == x.id)); 
