@@ -78,7 +78,7 @@ class App extends Component {
   galleryComponent = () => {
     const { event, hashtag, search } = this.state;
     return (
-      <div>
+      <div className="w-100">
       <Grid container justify="space-between" alignItems="center" className="pl-2">
         <Grid item>
           <h1 className="header">{event || 'Event Name'}</h1>

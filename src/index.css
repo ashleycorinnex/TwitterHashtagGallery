@@ -45,6 +45,10 @@
     padding-left:10px;
   }
 
+  .w-100{
+    width:100%;
+  }
+
   .header{
     font-size: 60px;
     margin:0;
